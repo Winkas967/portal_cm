@@ -36,9 +36,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username().trim(), request.password()));
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-        String token = jwtService.generateToken(request.username());
+        String token = jwtService.generateToken(principal.getId());
         ResponseCookie cookie = accessTokenCookie(token, Duration.ofMillis(jwtService.getExpirationMillis()));
 
         return ResponseEntity.ok()

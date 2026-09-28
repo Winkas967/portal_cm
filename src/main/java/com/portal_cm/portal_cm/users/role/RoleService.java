@@ -15,6 +15,7 @@ import java.util.Locale;
 public class RoleService {
 
     private static final String ENTITY_TYPE = "ROLE";
+    private static final String ADMIN_ROLE = "ADMIN";
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -65,6 +66,9 @@ public class RoleService {
             if (roleValue.isEmpty()) {
                 throw new IllegalArgumentException("Preencha o campo de role/permissão.");
             }
+            if (ADMIN_ROLE.equalsIgnoreCase(role.getRole()) && !ADMIN_ROLE.equals(roleValue)) {
+                throw new IllegalArgumentException("Não é possível alterar a permissão da role de administrador.");
+            }
             if (!roleValue.equalsIgnoreCase(role.getRole())
                     && roleRepository.existsByRoleIgnoreCaseAndIdNot(roleValue, id)) {
                 throw new IllegalArgumentException("Já existe uma role cadastrada com essa permissão.");
@@ -81,6 +85,10 @@ public class RoleService {
 
         if (!role.isActive()) {
             throw new IllegalArgumentException("A role já está inativa.");
+        }
+
+        if (ADMIN_ROLE.equalsIgnoreCase(role.getRole())) {
+            throw new IllegalArgumentException("Não é possível desativar a role de administrador.");
         }
 
         if (userRepository.existsByRole_IdAndIsActiveTrue(id)) {

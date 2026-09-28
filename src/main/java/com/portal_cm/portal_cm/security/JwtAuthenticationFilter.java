@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,26 +34,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractToken(request);
 
-        if (token == null) {
+        if (token == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            String username = jwtService.extractUsername(token);
+            Integer userId = jwtService.extractUserId(token);
+            UserPrincipal principal = userDetailsService.loadUserById(userId);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                if (jwtService.isTokenValid(token, username)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            if (principal.isEnabled()) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                log.debug("Token de usuário desativado (id {})", userId);
+                request.setAttribute(INVALID_TOKEN_ATTRIBUTE, Boolean.TRUE);
             }
-        } catch (JwtException e) {
-            log.debug("Token JWT inválido ou expirado: {}", e.getMessage());
+        } catch (JwtException | UsernameNotFoundException | IllegalArgumentException e) {
+            // Token inválido/expirado, usuário removido ou token no formato antigo:
+            // segue sem autenticar e o Spring Security responde 401 se a rota exigir login.
+            log.debug("Token JWT rejeitado: {}", e.getMessage());
             request.setAttribute(INVALID_TOKEN_ATTRIBUTE, Boolean.TRUE);
         }
 
@@ -69,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("access_token".equals(cookie.getName())) {
+                if ("access_token".equals(cookie.getName()) && !cookie.getValue().isBlank()) {
                     return cookie.getValue();
                 }
             }

@@ -20,14 +20,6 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        String acceptHeader = request.getHeader("Accept");
-        boolean isBrowserPageRequest = acceptHeader != null && acceptHeader.contains(MediaType.TEXT_HTML_VALUE);
-
-        if (isBrowserPageRequest) {
-            response.sendRedirect("/home");
-            return;
-        }
-
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

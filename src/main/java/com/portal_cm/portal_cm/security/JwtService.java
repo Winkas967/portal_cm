@@ -1,6 +1,5 @@
 package com.portal_cm.portal_cm.security;
 
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -23,28 +22,30 @@ public class JwtService {
         this.expirationMillis = expirationMillis;
     }
 
-    public String generateToken(String username) {
+    /**
+     * O token guarda o ID do usuário (e não o nome), para que renomear
+     * um usuário não invalide a sessão dele.
+     */
+    public String generateToken(Integer userId) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationMillis);
 
         return Jwts.builder()
-                .subject(username)
+                .subject(String.valueOf(userId))
                 .issuedAt(now)
                 .expiration(expirationDate)
                 .signWith(key)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return Jwts.parser().verifyWith(key).build()
+    /**
+     * Valida assinatura e expiração e devolve o ID do usuário.
+     * Lança JwtException se o token for inválido ou expirado,
+     * e NumberFormatException se o subject não for um ID.
+     */
+    public Integer extractUserId(String token) {
+        String subject = Jwts.parser().verifyWith(key).build()
                 .parseSignedClaims(token).getPayload().getSubject();
-    }
-
-    public boolean isTokenValid(String token, String username) {
-        try {
-            return extractUsername(token).equals(username);
-        } catch (JwtException e) {
-            return false;
-        }
+        return Integer.valueOf(subject);
     }
 }

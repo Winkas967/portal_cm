@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
 
     private static final String ENTITY_TYPE = "USER";
+    private static final String ADMIN_ROLE = "ADMIN";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -54,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse update(Integer id, UserUpdateRequest request) {
+    public UserResponse update(Integer id, UserUpdateRequest request, Integer currentUserId) {
         User user = findUser(id);
 
         if (!user.isActive()) {
@@ -81,21 +83,25 @@ public class UserService {
         }
 
         if (request.roleId() != null) {
-            user.setRole(findActiveRole(request.roleId()));
+            Role newRole = findActiveRole(request.roleId());
+            if (Objects.equals(id, currentUserId) && !ADMIN_ROLE.equalsIgnoreCase(newRole.getRole())) {
+                throw new IllegalArgumentException("Você não pode remover o seu próprio acesso de administrador.");
+            }
+            user.setRole(newRole);
         }
 
         return toResponse(userRepository.save(user));
     }
 
     @Transactional
-    public UserResponse deactivate(Integer id, String currentUsername) {
+    public UserResponse deactivate(Integer id, Integer currentUserId) {
         User user = findUser(id);
 
         if (!user.isActive()) {
             throw new IllegalArgumentException("O usuário já está inativo.");
         }
 
-        if (user.getName().equalsIgnoreCase(currentUsername)) {
+        if (Objects.equals(id, currentUserId)) {
             throw new IllegalArgumentException("Você não pode desativar o seu próprio usuário.");
         }
 

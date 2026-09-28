@@ -33,15 +33,11 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/api/auth/login", "/api/auth/logout", "/error", "/css/**", "/js/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/*/deactivate", "/api/users/*/reactivate").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/login", "/api/auth/logout", "/error").permitAll()
+                        .requestMatchers("/api/users", "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/roles").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/roles/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/roles/*/deactivate", "/api/roles/*/reactivate").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/audit-logs").hasRole("ADMIN")
-                        .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.disable())

@@ -7,7 +7,8 @@ import com.portal_cm.portal_cm.users.user.dto.UserUpdateRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import com.portal_cm.portal_cm.security.UserPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -40,13 +41,14 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> update(@PathVariable Integer id, @Valid @RequestBody UserUpdateRequest request) {
-        return ResponseEntity.ok(userService.update(id, request));
+    public ResponseEntity<UserResponse> update(@PathVariable Integer id, @Valid @RequestBody UserUpdateRequest request,
+                                               @AuthenticationPrincipal UserPrincipal currentUser) {
+        return ResponseEntity.ok(userService.update(id, request, currentUser.getId()));
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<UserResponse> deactivate(@PathVariable Integer id, Authentication authentication) {
-        return ResponseEntity.ok(userService.deactivate(id, authentication.getName()));
+    public ResponseEntity<UserResponse> deactivate(@PathVariable Integer id, @AuthenticationPrincipal UserPrincipal currentUser) {
+        return ResponseEntity.ok(userService.deactivate(id, currentUser.getId()));
     }
 
     @PatchMapping("/{id}/reactivate")
