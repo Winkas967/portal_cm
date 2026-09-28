@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: portal_cm
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portal_cm
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:OYyYjiO3CGghpwYZpNEvkSXxB9o6D0wd8q82OsjUwaY1crX6zdlIjYQsbvu71yIn}
+    expiration: 28800000  # 8 horas, em milissegundos
+  security:
+    cookie-secure: false  # true quando rodar em HTTPS
