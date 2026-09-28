@@ -5,7 +5,6 @@ import com.portal_cm.portal_cm.users.role.dto.RoleRequest;
 import com.portal_cm.portal_cm.users.role.dto.RoleResponse;
 import com.portal_cm.portal_cm.users.role.dto.RoleUpdateRequest;
 import jakarta.validation.Valid;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
