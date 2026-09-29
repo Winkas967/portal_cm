@@ -21,3 +21,6 @@ app:
     expiration: 28800000  # 8 horas, em milissegundos
   security:
     cookie-secure: false  # true quando rodar em HTTPS
+  storage:
+    dir: ${STORAGE_DIR:./uploads} #pasta onde ficam os anexos
+
