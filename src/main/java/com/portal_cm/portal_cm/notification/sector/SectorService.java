@@ -27,7 +27,7 @@ public class SectorService {
     @Transactional
     public SectorResponse create(SectorRequest request) {
         String name = request.name().trim();
-        if (sectorRepository.existisByNameIgnoreCase(name)) {
+        if (sectorRepository.existsByNameIgnoreCase(name)) {
             throw new IllegalArgumentException("Já existe um setor com este nome.");
         }
 
@@ -41,7 +41,7 @@ public class SectorService {
         Sector sector = findSector(id);
         String name = request.name().trim();
 
-        if (!name.equalsIgnoreCase(sector.getName()) && sectorRepository.existisByNameIgnoreCaseAndIdNot(name, id)) {
+        if (!name.equalsIgnoreCase(sector.getName()) && sectorRepository.existsByNameIgnoreCaseAndIdNot(name, id)) {
             throw new IllegalArgumentException("Já existe um setor com este nome.");
         }
 

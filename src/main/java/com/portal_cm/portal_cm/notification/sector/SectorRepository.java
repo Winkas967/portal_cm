@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SectorRepository extends JpaRepository<Sector, Integer> {
-    boolean existisByNameIgnoreCase(String name);
-    boolean existisByNameIgnoreCaseAndIdNot(String name, Integer id);
+    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Integer id);
     List<Sector> findAllByOrderByNameAsc();
     List<Sector> findAllByIsActiveTrueOrderByNameAsc();
 }
