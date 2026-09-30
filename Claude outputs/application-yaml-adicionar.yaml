@@ -1,0 +1,11 @@
+# Adicione dentro de "spring:", logo abaixo do bloco "thymeleaf:"
+# (mantenha os 2 espaços de indentação do começo das linhas)
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 55MB   # 5 arquivos de 10 MB + os dados da ficha
+  data:
+    web:
+      pageable:
+        max-page-size: 100
