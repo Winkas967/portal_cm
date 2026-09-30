@@ -18,14 +18,14 @@ public record NotificationRequest(
 
         // seção 1
         @NotEmpty(message = "Marque pelo menos um tipo de incidente")
-        Set<@NotNull Integer> IncidentTypeIds,
+        Set<@NotNull Integer> incidentTypeIds,
 
         MedicationErrorStage medicationErrorStage,
 
         PhlebitisType phlebitisType,
 
         @Size(max = 2000, message = "A descrição de 'Outros' deve ter no máximo 2000 caracteres")
-        String otherIncidentDescriptionm,
+        String otherIncidentDescription,
 
         // seçao 2
         @Valid

@@ -16,6 +16,7 @@ spring:
     check-template-location: false
 
 app:
+  timezone: America/Sao_Paulo
   jwt:
     secret: ${JWT_SECRET:OYyYjiO3CGghpwYZpNEvkSXxB9o6D0wd8q82OsjUwaY1crX6zdlIjYQsbvu71yIn}
     expiration: 28800000  # 8 horas, em milissegundos
