@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: portal_cm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portal_cm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Sao_Paulo
+    ports:
+      # 5433 na máquina, para não brigar com o Postgres instalado localmente (5432).
+      # Serve só para abrir o banco no DBeaver/pgAdmin; a aplicação usa a rede interna do Docker.
+      - "5433:5432"
+    volumes:
+      - portal_cm_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d portal_cm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: portal_cm_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Dentro da rede do Docker o banco se chama "postgres", não "localhost"
+      DB_URL: jdbc:postgresql://postgres:5432/portal_cm
+      DB_USERNAME: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      STORAGE_DIR: /app/uploads
+      TZ: America/Sao_Paulo
+    ports:
+      # "0.0.0.0" = aceita conexões pelo IP da máquina (ex.: http://192.168.0.50:8080)
+      - "0.0.0.0:${APP_PORT:-8080}:8080"
+    volumes:
+      - portal_cm_uploads:/app/uploads
+
+volumes:
+  portal_cm_postgres_data:
+  portal_cm_uploads:

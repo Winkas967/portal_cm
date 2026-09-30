@@ -37,3 +37,6 @@ uploads/
 
 ### Postman ###
 postman
+
+### Segredos do Docker ###
+.env

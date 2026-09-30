@@ -1,5 +1,5 @@
 INSERT INTO users(username, password_hash, role_id)
-VALUES ('admin', '$2b$10$OU4yP40ioTqEd1N/4vv3le9o0ST1LA8pFvzNjoxvkqsRMMNkX98f6', 3);
+VALUES ('admin', '$2b$10$OU4yP40ioTqEd1N/4vv3le9o0ST1LA8pFvzNjoxvkqsRMMNkX98f6', (SELECT id FROM role WHERE UPPER(role) = 'ADMIN'));
 
 
 -- Carga inicial
