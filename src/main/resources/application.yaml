@@ -12,8 +12,6 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-  thymeleaf:
-    check-template-location: false
   servlet:
     multipart:
       max-file-size: 10MB

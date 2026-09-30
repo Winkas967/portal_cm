@@ -20,6 +20,12 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        // Página aberta no navegador (não é chamada da API): manda para a tela de login
+        if (!request.getRequestURI().startsWith("/api/")) {
+            response.sendRedirect("/login");
+            return;
+        }
+
         String message = Boolean.TRUE.equals(request.getAttribute(JwtAuthenticationFilter.INVALID_TOKEN_ATTRIBUTE))
                 ? "Sessão inválida ou expirada. Faça login novamente."
                 : "Você precisa estar autenticado para acessar este recurso.";

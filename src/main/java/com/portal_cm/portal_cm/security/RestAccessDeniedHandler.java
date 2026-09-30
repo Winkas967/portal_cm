@@ -20,6 +20,12 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+        // Página sem permissão (ex.: /admin para quem não é ADMIN): volta para a lista de fichas
+        if (!request.getRequestURI().startsWith("/api/")) {
+            response.sendRedirect("/fichas");
+            return;
+        }
+
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração — Portal CM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app-layout auth-checking">
+
+    <aside th:replace="~{fragments/sidebar :: sidebar('admin')}"></aside>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <main class="main">
+        <div class="topbar">
+            <div class="topbar-heading">
+                <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Abrir menu">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div>
+                    <div class="page-title">Administração</div>
+                    <div class="page-subtitle">Usuários, perfis de acesso e setores do hospital</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="topbar">
+            <div class="tabs">
+                <button type="button" class="tab" data-tab="users">Usuários</button>
+                <button type="button" class="tab" data-tab="roles">Perfis</button>
+                <button type="button" class="tab" data-tab="sectors">Setores</button>
+            </div>
+            <button type="button" class="btn-primary" id="new-button">+ Novo usuário</button>
+        </div>
+
+        <div class="panel" data-panel="users">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th style="width: 180px;">Ações</th></tr></thead>
+                    <tbody id="users-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel hidden" data-panel="roles">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead><tr><th>Nome</th><th>Código</th><th>Usuários</th><th>Status</th><th style="width: 180px;">Ações</th></tr></thead>
+                    <tbody id="roles-body"></tbody>
+                </table>
+            </div>
+            <div class="form-hint">O código "ADMIN" dá acesso à administração e a todas as fichas.</div>
+        </div>
+
+        <div class="panel hidden" data-panel="sectors">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead><tr><th>Setor</th><th>Status</th><th style="width: 180px;">Ações</th></tr></thead>
+                    <tbody id="sectors-body"></tbody>
+                </table>
+            </div>
+            <div class="form-hint">Setor desativado some do formulário, mas as fichas antigas continuam ligadas a ele.</div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal de usuário -->
+<div id="user-modal" class="modal-overlay hidden">
+    <form class="modal-card" id="user-form">
+        <div class="modal-title" id="user-modal-title">Cadastrar usuário</div>
+        <div class="form-fields">
+            <div class="form-group">
+                <label class="form-label" for="user-name">Usuário<span class="req">*</span></label>
+                <input class="form-input" id="user-name" maxlength="50" placeholder="nome.sobrenome">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="user-password" id="user-password-label">Senha<span class="req">*</span></label>
+                <input class="form-input" id="user-password" type="password" minlength="6" placeholder="Mínimo de 6 caracteres" autocomplete="new-password">
+                <div class="form-hint hidden" id="user-password-hint">Deixe em branco para manter a senha atual.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="user-role">Perfil<span class="req">*</span></label>
+                <select class="form-select" id="user-role"><option value="">Selecione um perfil</option></select>
+            </div>
+        </div>
+        <p class="form-error" id="user-error"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" data-close>Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal de perfil -->
+<div id="role-modal" class="modal-overlay hidden">
+    <form class="modal-card" id="role-form">
+        <div class="modal-title" id="role-modal-title">Cadastrar perfil</div>
+        <div class="form-fields">
+            <div class="form-group">
+                <label class="form-label" for="role-name">Nome<span class="req">*</span></label>
+                <input class="form-input" id="role-name" maxlength="50" placeholder="Ex.: Enfermagem">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="role-code">Código<span class="req">*</span></label>
+                <input class="form-input" id="role-code" maxlength="20" placeholder="Ex.: ENFERMAGEM">
+                <div class="form-hint">Salvo em maiúsculas. Use "ADMIN" para acesso administrativo.</div>
+            </div>
+        </div>
+        <p class="form-error" id="role-error"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" data-close>Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal de setor -->
+<div id="sector-modal" class="modal-overlay hidden">
+    <form class="modal-card" id="sector-form">
+        <div class="modal-title" id="sector-modal-title">Cadastrar setor</div>
+        <div class="form-fields">
+            <div class="form-group">
+                <label class="form-label" for="sector-name">Nome do setor<span class="req">*</span></label>
+                <input class="form-input" id="sector-name" maxlength="100" placeholder="Ex.: UTI Adulto">
+            </div>
+        </div>
+        <p class="form-error" id="sector-error"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" data-close>Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+        </div>
+    </form>
+</div>
+
+<script src="/js/notifications.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

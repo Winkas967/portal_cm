@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Menu lateral usado em todas as telas logadas.
+  Uso: <aside th:replace="~{fragments/sidebar :: sidebar('fichas')}"></aside>
+  Valores de "active": fichas, nova, users, roles, sectors
+-->
+<aside class="sidebar" th:fragment="sidebar(active)">
+    <div class="sidebar-top">
+        <div class="sidebar-logo">
+            <img src="/img/logo-unimed-ssp.png" alt="Unimed S. S. do Paraíso" class="logo-sidebar">
+            <div class="sidebar-app-name">Portal CM · Notificações</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">Notificações</div>
+            <a href="/fichas" class="nav-item" th:classappend="${active == 'fichas'} ? 'active'">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M8 11h8M8 15h5"/></svg>
+                <span>Fichas</span>
+            </a>
+            <a href="/fichas/nova" class="nav-item" th:classappend="${active == 'nova'} ? 'active'">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+                <span>Nova ficha</span>
+            </a>
+
+            <div class="nav-section admin-only">Administração</div>
+            <a href="/admin?tab=users" class="nav-item admin-only" th:classappend="${active == 'users'} ? 'active'">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                <span>Usuários</span>
+            </a>
+            <a href="/admin?tab=roles" class="nav-item admin-only" th:classappend="${active == 'roles'} ? 'active'">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6l-8-3Z"/></svg>
+                <span>Perfis</span>
+            </a>
+            <a href="/admin?tab=sectors" class="nav-item admin-only" th:classappend="${active == 'sectors'} ? 'active'">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg>
+                <span>Setores</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="sidebar-divider"></div>
+        <div class="user-mini">
+            <div class="user-avatar" id="user-avatar">·</div>
+            <div style="min-width: 0;">
+                <div class="user-mini-name" id="user-mini-name">—</div>
+                <div class="user-mini-role" id="user-mini-role"></div>
+            </div>
+        </div>
+        <a href="#" class="nav-item" id="logout-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+            <span>Sair</span>
+        </a>
+    </div>
+</aside>
+</body>
+</html>

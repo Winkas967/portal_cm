@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova notificação — Portal CM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div class="app-layout auth-checking">
+
+    <aside th:replace="~{fragments/sidebar :: sidebar('nova')}"></aside>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <main class="main">
+        <div class="topbar">
+            <div class="topbar-heading">
+                <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Abrir menu">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div>
+                    <div class="breadcrumb"><a href="/fichas">Fichas</a> / Nova notificação</div>
+                    <div class="page-title">Notificação de incidente / evento adverso</div>
+                    <div class="page-subtitle">Formulário FOR-NSP-001 · Campos com <span class="req">*</span> são obrigatórios</div>
+                </div>
+            </div>
+        </div>
+
+        <form id="notification-form" class="form-layout" novalidate>
+            <div class="form-column">
+
+                <!-- 1. Identificação -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">1</div><div><div class="section-title">Identificação da ocorrência</div><div class="section-desc">Onde e quando o evento aconteceu</div></div></div>
+                    <div class="section-body">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="sector">Setor da ocorrência<span class="req">*</span></label>
+                                <select class="form-select" id="sector"><option value="">Selecione o setor</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="event-date">Data e hora do evento<span class="req">*</span></label>
+                                <input class="form-input" type="datetime-local" id="event-date">
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="notifier">Notificador</label>
+                                <input class="form-input" id="notifier" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="notification-date">Data da notificação</label>
+                                <input class="form-input" id="notification-date" readonly value="Registrada automaticamente ao enviar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Tipos de incidente -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">2</div><div><div class="section-title">Incidente / evento adverso ocorrido com o paciente devido a</div><div class="section-desc">Marque um ou mais tipos<span class="req">*</span></div></div></div>
+                    <div class="section-body">
+                        <div class="type-grid" id="type-grid"></div>
+
+                        <div id="sub-medication" class="subfield hidden">
+                            <div class="subfield-title">Falha / erro de medicação — em qual fase?<span class="req">*</span></div>
+                            <div class="radio-row">
+                                <label class="radio-pill"><input type="radio" name="medication-stage" value="PRESCRICAO"> Prescrição</label>
+                                <label class="radio-pill"><input type="radio" name="medication-stage" value="DISPENSACAO"> Dispensação</label>
+                                <label class="radio-pill"><input type="radio" name="medication-stage" value="ADMINISTRACAO"> Administração</label>
+                            </div>
+                        </div>
+
+                        <div id="sub-phlebitis" class="subfield hidden">
+                            <div class="subfield-title">Flebite — qual tipo?<span class="req">*</span></div>
+                            <div class="radio-row">
+                                <label class="radio-pill"><input type="radio" name="phlebitis-type" value="QUIMICA"> Química</label>
+                                <label class="radio-pill"><input type="radio" name="phlebitis-type" value="MECANICA"> Mecânica</label>
+                                <label class="radio-pill"><input type="radio" name="phlebitis-type" value="INFECCIOSA"> Infecciosa</label>
+                            </div>
+                        </div>
+
+                        <div id="sub-other" class="subfield hidden">
+                            <label class="subfield-title" for="other-description">Outros — descreva o incidente<span class="req">*</span></label>
+                            <input class="form-input" id="other-description" maxlength="2000" placeholder="Descreva brevemente">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.1 Farmacovigilância (medicamento) -->
+                <div class="section conditional hidden" id="section-pharmaco">
+                    <div class="section-head"><div class="section-num">2.1</div><div><div class="section-title">Farmacovigilância — dados do medicamento</div><div class="section-desc">Aparece porque "Defeito qualidade medicação" foi marcado</div></div></div>
+                    <div class="section-body">
+                        <div class="grid-2">
+                            <div class="form-group"><label class="form-label" for="product-name">Nome do produto<span class="req">*</span></label><input class="form-input" id="product-name" maxlength="150"></div>
+                            <div class="form-group"><label class="form-label" for="manufacturer">Fabricante<span class="req">*</span></label><input class="form-input" id="manufacturer" maxlength="150"></div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group"><label class="form-label" for="batch">Lote<span class="req">*</span></label><input class="form-input" id="batch" maxlength="50"></div>
+                            <div class="form-group"><label class="form-label" for="expiry-date">Validade<span class="req">*</span></label><input class="form-input" type="date" id="expiry-date"></div>
+                        </div>
+                        <div class="form-hint">Dica: tire uma foto do rótulo com o lote e anexe na seção 6.</div>
+                    </div>
+                </div>
+
+                <!-- 2.1 Tecnovigilância (equipamento) -->
+                <div class="section conditional hidden" id="section-techno">
+                    <div class="section-head"><div class="section-num">2.1</div><div><div class="section-title">Tecnovigilância — dados do equipamento</div><div class="section-desc">Aparece porque "Falha equipamento hospitalar" foi marcado</div></div></div>
+                    <div class="section-body">
+                        <div class="grid-2">
+                            <div class="form-group"><label class="form-label" for="equipment">Equipamento<span class="req">*</span></label><input class="form-input" id="equipment" maxlength="150"></div>
+                            <div class="form-group"><label class="form-label" for="serial-number">Número de série</label><input class="form-input" id="serial-number" maxlength="80"></div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group"><label class="form-label" for="asset-number">Número de patrimônio</label><input class="form-input" id="asset-number" maxlength="50"></div>
+                            <div class="form-group"><label class="form-label" for="maintenance-date">Data da manutenção preventiva</label><input class="form-input" type="date" id="maintenance-date"></div>
+                        </div>
+                        <div class="form-hint">Dica: fotografe a etiqueta do equipamento e anexe na seção 6.</div>
+                    </div>
+                </div>
+
+                <!-- 3. Não conformidade -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">3</div><div><div class="section-title">Não conformidade encontrada</div><div class="section-desc">Opcional</div></div></div>
+                    <div class="section-body">
+                        <textarea class="form-textarea" id="nonconformity" maxlength="5000" placeholder="Descreva a não conformidade, se houver"></textarea>
+                    </div>
+                </div>
+
+                <!-- 4. Paciente -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">4</div><div><div class="section-title">Dados do paciente</div><div class="section-desc">Informações para identificação e rastreabilidade</div></div></div>
+                    <div class="section-body">
+                        <div class="grid-3">
+                            <div class="form-group span-2"><label class="form-label" for="patient-name">Nome do paciente<span class="req">*</span></label><input class="form-input" id="patient-name" maxlength="150"></div>
+                            <div class="form-group"><label class="form-label" for="birth-date">Data de nascimento</label><input class="form-input" type="date" id="birth-date"></div>
+                        </div>
+                        <div class="grid-4">
+                            <div class="form-group">
+                                <label class="form-label" for="patient-color">Cor</label>
+                                <select class="form-select" id="patient-color">
+                                    <option value="">Selecione</option>
+                                    <option>Branca</option>
+                                    <option>Preta</option>
+                                    <option>Parda</option>
+                                    <option>Amarela</option>
+                                    <option>Indígena</option>
+                                    <option>Não informada</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label class="form-label" for="medical-record">Nº prontuário</label><input class="form-input" id="medical-record" maxlength="30"></div>
+                            <div class="form-group"><label class="form-label" for="attendance">Nº atendimento</label><input class="form-input" id="attendance" maxlength="30"></div>
+                            <div class="form-group"><label class="form-label" for="ward-bed">Enfermaria / leito</label><input class="form-input" id="ward-bed" maxlength="50"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="visit-reason">Motivo que veio ao serviço</label><input class="form-input" id="visit-reason" maxlength="2000"></div>
+                    </div>
+                </div>
+
+                <!-- 5. Descrição -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">5</div><div><div class="section-title">Descrição do evento</div><div class="section-desc">O que aconteceu com o paciente, horários e envolvidos</div></div></div>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label class="form-label" for="event-description">Descrição<span class="req">*</span></label>
+                            <textarea class="form-textarea" id="event-description" style="min-height: 120px;" maxlength="10000"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="immediate-actions">Ações imediatas realizadas pelos profissionais</label>
+                            <textarea class="form-textarea" id="immediate-actions" maxlength="5000"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Anexos -->
+                <div class="section">
+                    <div class="section-head"><div class="section-num">6</div><div><div class="section-title">Anexos</div><div class="section-desc">Fotos do defeito, rótulo ou documentos — até 5 arquivos, 10 MB cada</div></div></div>
+                    <div class="section-body">
+                        <label class="dropzone" id="dropzone" for="file-input">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#00995d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+                            <span class="dropzone-title">Arraste os arquivos aqui ou clique para selecionar</span>
+                            <span class="dropzone-sub">JPG, PNG ou PDF · no celular, abre a câmera</span>
+                        </label>
+                        <input type="file" id="file-input" class="hidden" multiple accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf">
+                        <div class="file-list" id="file-list"></div>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <p class="form-error" id="form-error"></p>
+                    <a href="/fichas" class="btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn-primary" id="submit-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        Enviar notificação
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lateral: andamento do preenchimento -->
+            <aside class="side-card">
+                <div class="panel">
+                    <div class="panel-title">Preenchimento</div>
+                    <div class="progress"><div id="progress-bar"></div></div>
+                    <div class="checklist" id="checklist"></div>
+                </div>
+                <div class="note">A notificação é uma ferramenta de melhoria, não de punição. Descreva os fatos com objetividade.</div>
+            </aside>
+        </form>
+    </main>
+</div>
+
+<script src="/js/notifications.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/ficha-nova.js"></script>
+</body>
+</html>
