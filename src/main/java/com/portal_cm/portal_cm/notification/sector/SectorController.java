@@ -3,7 +3,6 @@ package com.portal_cm.portal_cm.notification.sector;
 import com.portal_cm.portal_cm.notification.sector.dto.SectorRequest;
 import com.portal_cm.portal_cm.notification.sector.dto.SectorResponse;
 import jakarta.validation.Valid;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
