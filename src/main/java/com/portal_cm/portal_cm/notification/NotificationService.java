@@ -111,6 +111,7 @@ public class NotificationService {
                 "A descrição de 'Outros' só pode ser informada quando 'Outros' estiver marcado.");
 
         IncidentNotification notification = new IncidentNotification();
+        notification.setCode(clean(request.code()));
         notification.setSector(sector);
         notification.setNotifier(userRepository.getReferenceById(currentUserId));
         notification.setNotificationDate(now);

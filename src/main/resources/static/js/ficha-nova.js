@@ -178,6 +178,7 @@ function buildRequest() {
     return {
         sectorId: value("sector") ? Number(value("sector")) : null,
         eventDate: orNull(value("event-date")),
+        code: orNull(value("optional-notifier")),
         incidentTypeIds: typeIds,
         medicationErrorStage: codes.has("MEDICATION_ERROR") && stage ? stage.value : null,
         phlebitisType: codes.has("PHLEBITIS") && phlebitis ? phlebitis.value : null,
@@ -269,7 +270,7 @@ async function onSubmit(event) {
     const me = await initSession();
     if (!me) return;
 
-    $("notifier").value = me.username + " (você)";
+    //$("notifier").value = me.username + " (você)";
 
     // Não deixa escolher data/hora futura
     const now = new Date();

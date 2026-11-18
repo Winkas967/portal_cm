@@ -104,6 +104,9 @@ public class IncidentNotification {
     @Column(name = "created_at", nullable = false, columnDefinition = "timestamptz")
     private OffsetDateTime createdAt;
 
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id")
     private List<IncidentAttachment> attachments = new ArrayList<>();

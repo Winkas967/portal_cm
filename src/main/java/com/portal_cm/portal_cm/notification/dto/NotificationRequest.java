@@ -63,7 +63,11 @@ public record NotificationRequest(
         String eventDescription,
 
         @Size(max = 5000, message = "As ações imediatas devem ter no máximo 5000 caracteres")
-        String immediateActions
+        String immediateActions,
+
+        @NotBlank
+        @Size(max = 255, message = "O notificador opcional deve ter no máximo 255 caracteres")
+        String code
 
 
 ) {

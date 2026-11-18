@@ -46,7 +46,6 @@ function render(n) {
     $("meta-sector").textContent = n.sector.name;
     $("meta-event").textContent = formatDateTime(n.eventDate);
     $("meta-notified").textContent = formatDateTime(n.notificationDate);
-    $("meta-notifier").textContent = n.notifier.name;
 
     // Tipos, com o complemento de fase/tipo de flebite na própria etiqueta
     $("detail-types").innerHTML = n.incidentTypes.map(t => {
