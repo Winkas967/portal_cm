@@ -254,7 +254,7 @@ async function onSubmit(event) {
             return;
         }
         queueNotification(`Ficha nº ${data.id} registrada com sucesso.`, "success");
-        window.location.href = "/fichas/detalhe?id=" + data.id;
+        window.location.href = "/fichas/nova";
     } catch (err) {
         const message = "Não foi possível conectar ao servidor.";
         errorEl.textContent = message;

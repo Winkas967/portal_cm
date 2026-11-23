@@ -164,7 +164,7 @@ async function initSession(options = {}) {
 
     if (options.adminOnly && !isAdmin()) {
         queueNotification("Você não possui permissão para acessar esta página.", "error");
-        window.location.href = "/fichas";
+        window.location.href = "/fichas/novas";
         return null;
     }
 

@@ -32,7 +32,7 @@ document.getElementById("login-form").addEventListener("submit", async function 
             return;
         }
 
-        window.location.href = "/fichas";
+        window.location.href = "/fichas/nova";
     } catch (err) {
         errorMessage.textContent = "Não foi possível conectar ao servidor.";
     } finally {
