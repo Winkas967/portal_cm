@@ -1,6 +1,7 @@
 // Tela "Fichas": indicadores, filtros e lista paginada.
 
 const PAGE_SIZE = 15;
+const me = await initSession({ adminOnly: true });
 let page = 0;
 let totalPages = 1;
 let incidentTypes = [];

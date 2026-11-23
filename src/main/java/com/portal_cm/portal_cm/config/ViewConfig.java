@@ -13,7 +13,7 @@ public class ViewConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/fichas");
+        registry.addRedirectViewController("/", "/fichas/nova");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/fichas").setViewName("fichas");
         registry.addViewController("/fichas/nova").setViewName("ficha-nova");

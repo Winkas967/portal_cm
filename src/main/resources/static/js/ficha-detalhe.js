@@ -2,6 +2,7 @@
 
 const STAGE_LABELS = { PRESCRICAO: "Prescrição", DISPENSACAO: "Dispensação", ADMINISTRACAO: "Administração" };
 const PHLEBITIS_LABELS = { QUIMICA: "Química", MECANICA: "Mecânica", INFECCIOSA: "Infecciosa" };
+const me = await initSession({ adminOnly: true });
 
 const $ = id => document.getElementById(id);
 
