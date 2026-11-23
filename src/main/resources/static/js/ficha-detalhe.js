@@ -2,7 +2,6 @@
 
 const STAGE_LABELS = { PRESCRICAO: "Prescrição", DISPENSACAO: "Dispensação", ADMINISTRACAO: "Administração" };
 const PHLEBITIS_LABELS = { QUIMICA: "Química", MECANICA: "Mecânica", INFECCIOSA: "Infecciosa" };
-const me = await initSession({ adminOnly: true });
 
 const $ = id => document.getElementById(id);
 
@@ -119,7 +118,7 @@ function render(n) {
 $("print-button").addEventListener("click", () => window.print());
 
 (async function init() {
-    const me = await initSession();
+    const me = await initSession({ adminOnly: true});
     if (!me) return;
 
     const id = new URLSearchParams(window.location.search).get("id");
